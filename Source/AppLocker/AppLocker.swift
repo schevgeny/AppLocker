@@ -61,11 +61,11 @@ public class AppLocker: UIViewController {
     private var isFirstCreationStep = true
     private var savedPin: String? {
         get {
-            return ""
+            return UserDefaults.standard.string(forKey: ALConstants.kPincode)
         }
         set {
             guard let newValue = newValue else { return }
-            
+            UserDefaults.standard.setValue(newValue, forKey: ALConstants.kPincode)
         }
     }
     
@@ -170,6 +170,7 @@ public class AppLocker: UIViewController {
     
     private func removePin() {
         //        AppLocker.valet.removeObject(forKey: ALConstants.kPincode)
+        UserDefaults.standard.removeObject(forKey: ALConstants.kPincode)
         dismiss(animated: true) {
             self.onSuccessfulDismiss?(self.mode)
         }
@@ -285,5 +286,9 @@ public extension AppLocker {
             locker.photoImageView.isHidden = true
         }
         root.present(locker, animated: true, completion: nil)
+    }
+    class func isLock() -> Bool {
+        guard let kPincode = UserDefaults.standard.string(forKey: ALConstants.kPincode) else { return false }
+        return !kPincode.isEmpty
     }
 }
